@@ -60,6 +60,55 @@ FROM employees
 GROUP BY  gender, region_id
 ORDER BY gender, region_id
 
+-- Get Employees who works on department which not exists on department table 
+SELECT first_name, last_name FROM employees
+WHERE department NOT IN (SELECT department FROM departments)
+
+-- Get department which does not exists on departments table
+SELECT DISTINCT department FROM employees
+WHERE department NOT IN (SELECT department FROM departments)
+
+-- Get Employees who work on Electronic Division
+SELECT first_name, last_name, department FROM employees e
+WHERE e.department IN (SELECT department FROM departments WHERE division = 'Electronics')
+
+-- Get Employees who work on 'Asia' and 'Canada' and their salart more than $100,000
+SELECT * FROM employees
+WHERE region_id IN (SELECT region_id FROM regions WHERE country = 'Asia' OR  country = 'Canada')
+AND salary > 130000
+
+SELECT * FROM employees
+WHERE region_id IN (SELECT region_id FROM regions WHERE country IN ('Asia', 'Canada'))
+AND salary > 130000
+
+-- Get employees whos salary less than max salary of employees
+SELECT first_name, last_name, department, 
+(SELECT MAX(salary) FROM employees) - salary AS emp_salary_compared_with_maxempl_al
+FROM employees
+WHERE region_id IN (SELECT region_id FROM regions WHERE country IN ('Asia', 'Canada'))
+
+
+-- Write a query that returns all of those employees that work in the kids division AND the dates at which
+-- those employees were hired is greater than all of the hire_dates of employees who work in the maintenance
+-- department
+SELECT * FROM employees
+WHERE department IN (SELECT department 
+					 FROM departments 
+					 WHERE division = 'Kids') 
+AND
+hire_date > ALL(SELECT hire_date 
+				FROM employees 
+				WHERE department = 'Maintenance')
+
+-- Most Frequent salaries and get order results by Decending order
+SELECT salary, COUNT(salary)
+FROM employees
+GROUP BY salary
+HAVING COUNT(salary) > 1
+ORDER BY salary DESC
+LIMIT 1
+
+
 
 
 
